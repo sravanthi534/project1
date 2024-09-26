@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="styles.css">
+    <title>Registration Page</title>
+</head>
+<body>
+    <div class="container">
+        <div class="left-side">
+            <h1>Welcome to RevShop!</h1>
+            <p>Create your account and start shopping with us today!</p>
+            <img src="#" alt="Welcome Image" class="welcome-image">
+        </div>
+        <div class="right-side">
+            <form class="registration-form">
+                <h2>Create Account</h2>
+                
+                <div class="input-group email-group">
+                    <input type="email" id="email-input" placeholder="Email Address" required>
+                    <span id="change-email" class="hidden">Change</span> <!-- Hidden initially -->
+                </div>
+
+                <button type="button" id="continue-button">Continue</button>
+
+                <!-- OTP Section -->
+                <div id="otp-section" class="hidden-section">
+                    <div class="input-group">
+                        <input type="text" id="otp-input" placeholder="Enter OTP" required>
+                        <span class="resend-otp">Resend OTP</span> <!-- Positioned next to OTP input -->
+                    </div>
+
+                    <div class="button-container">
+                        <button type="button" id="signup-button">Sign Up</button>
+                    </div>
+                </div>
+
+                <div class="message">
+                    <p>Already have an account? <a href="#">Login</a></p>
+                </div>
+            </form>
+        </div>
+    </div>
+    
+    <script>
+        // JavaScript to handle OTP section visibility, button behavior, and email editing
+        document.getElementById('continue-button').addEventListener('click', function() {
+            document.getElementById('otp-section').style.display = 'block';
+            document.getElementById('continue-button').style.display = 'none'; // Hide the "Continue" button
+            document.getElementById('email-input').disabled = true; // Disable the email field
+            document.getElementById('change-email').style.display = 'inline-block'; // Show the "Change Email" link
+        });
+
+        document.getElementById('change-email').addEventListener('click', function() {
+            document.getElementById('email-input').disabled = false; // Enable email editing
+            document.getElementById('continue-button').style.display = 'inline-block'; // Show "Continue" button again
+            document.getElementById('change-email').style.display = 'none'; // Hide "Change Email"
+            document.getElementById('otp-section').style.display = 'none'; // Hide OTP section
+        });
+    </script>
+</body>
+</html>
