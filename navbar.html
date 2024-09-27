@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RevShop Navbar with Carousel</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="navbar.css">
+</head>
+<body>
+    <nav>
+        <div class="navbar">
+            <div class="logo">
+                <h2>RevShop</h2>
+            </div>
+            <div class="search-bar">
+                <input type="text" placeholder="Search for products...">
+                <button><i class="fas fa-search"></i></button>
+            </div>
+            <ul class="nav-links">
+                <li class="dropdown" id="user-dropdown">
+                    <a href="#" class="dropbtn"><i class="fas fa-user"></i> Login</a>
+                    <div class="dropdown-content">
+                        <a href="#">New Customer? Sign Up</a>
+                        <a href="#">My Profile</a>
+                        <a href="#">My Orders</a>
+                    </div>
+                </li>
+                <li><a href="#"><i class="fas fa-shopping-cart"></i> Cart</a></li>
+                <li><a href="#"><i class="fas fa-heart"></i> Wishlist</a></li>
+                <li><a href="#"><i class="fas fa-store"></i> Become a Seller</a></li>
+            </ul>
+            <div class="hamburger" onclick="toggleMenu()">
+                <i class="fas fa-bars"></i>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Include Bootstrap JS libraries -->
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.10.2/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+    <script>
+        function toggleMenu() {
+            const navLinks = document.querySelector('.nav-links');
+            navLinks.classList.toggle('active');
+        }
+
+        // Function to update navbar based on login status
+        function updateLoginStatus() {
+            const userDropdown = document.getElementById('user-dropdown');
+            const dropdownContent = userDropdown.querySelector('.dropdown-content');
+            const dropbtn = userDropdown.querySelector('.dropbtn');
+
+            const userName = localStorage.getItem('username'); // Get username from localStorage
+
+            if (userName) {
+                // If user is logged in, show user name and logout option
+                dropbtn.innerHTML = `<i class="fas fa-user"></i> ${userName}`;
+                dropdownContent.innerHTML = `
+                    <a href="#">My Profile</a>
+                    <a href="#">My Orders</a>
+                    <a href="#" onclick="logout()">Logout</a>
+                `;
+            } else {
+                // If user is not logged in, show the login option
+                dropbtn.innerHTML = '<i class="fas fa-user"></i> Login';
+                dropdownContent.innerHTML = `
+                    <a href="#">New Customer? Sign Up</a>
+                    <a href="#">My Profile</a>
+                    <a href="#">My Orders</a>
+                `;
+            }
+        }
+
+        // Simulated logout function
+        function logout() {
+            alert('Logging out...');
+            localStorage.removeItem('username'); // Remove username from localStorage
+            location.reload(); // Reload the page to reset the UI
+        }
+
+        // Call the updateLoginStatus function on page load
+        document.addEventListener('DOMContentLoaded', updateLoginStatus);
+    </script>
+</body>
+</html>
