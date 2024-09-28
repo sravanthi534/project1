@@ -1,0 +1,394 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RevShop - Delivery Address</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        /* Custom styles */
+        .address-item {
+            padding: 10px;
+            border-bottom: 1px solid #cb0808;
+        }
+        .address-item:last-child {
+            border-bottom: none;
+        }
+        .card-header h5 {
+            font-size: 1.2rem;
+        }
+        .card-body form {
+            margin-top: 20px;
+        }
+        #continueButton, #otpContinueButton {
+            margin-top: 20px;
+            height: 45px;
+            width: 145px;
+        }
+        body {
+            padding: 20px;
+        }
+        .timer {
+            font-weight: bold;
+            color: #ff5722;
+        }
+        .price-details, .offers {
+            border: 1px solid #ddd;
+            padding: 10px;
+            background-color: #f9f9f9;
+            margin-top: 10px;
+        }
+        .btn-continue {
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+        <a class="navbar-brand" href="#">RevShop</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav ml-auto">
+                <li class="nav-item active">
+                    <a class="nav-link" href="#">Login</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#">Cart</a>
+                </li>
+            </ul>
+        </div>
+    </nav>
+
+    <div class="container mt-5">
+
+        <!-- Login or Signup Section -->
+        <div class="card mb-4">
+            <div class="card-header">
+                <h5><span class="badge badge-primary mr-2">1</span>LOGIN OR SIGNUP</h5>
+            </div>
+            <div class="card-body">
+                <form id="loginForm" onsubmit="return showOtpField(event)">
+                    <div class="form-row">
+                        <div class="form-group col-md-8">
+                            <label for="emailPhone">Enter Email/Mobile number</label>
+                            <input type="text" class="form-control" id="emailPhone" placeholder="Enter Email/Mobile number" required>
+                        </div>
+                        <div class="form-group col-md-4 d-flex align-items-end">
+                            <button type="button" id="changeButton" class="btn btn-link" onclick="changeMobileNumber()">Change</button>
+                        </div>
+                    </div>
+                    <button type="submit" class="btn btn-warning btn-block">CONTINUE</button>
+                </form>
+
+                <!-- OTP Section (Initially Hidden) -->
+                <div id="otpSection" class="form-row mt-4" style="display: none;">
+                    <div class="form-group col-md-6">
+                        <label for="otp">Enter OTP</label>
+                        <input type="text" class="form-control" id="otp" placeholder="Enter OTP">
+                    </div>
+                    <div class="form-group col-md-6 d-flex align-items-end">
+                        <button type="button" class="btn btn-link" id="resendOtp">Resend OTP</button>
+                    </div>
+                    <button type="button" id="otpContinueButton" class="btn btn-warning btn-block" onclick="showDeliveryAddress()">CONTINUE</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- DELIVERY ADDRESS Section -->
+        <div class="card mb-4" id="deliveryAddressCard" onclick="hideOtpSection()">
+            <div class="card-header">
+                <h5><span class="badge badge-primary mr-2">2</span>DELIVERY ADDRESS</h5>
+            </div>
+            <div class="card-body">
+                <div id="addressList" class="mb-3">
+                    <!-- Example Address Item -->
+                    <div class="address-item d-flex justify-content-between align-items-center">
+                        <div class="custom-control custom-radio">
+                            <input type="radio" id="address1" name="selectedAddress" class="custom-control-input" onclick="enableContinue()">
+                            <label class="custom-control-label" for="address1">123 Main St, City, State</label>
+                        </div>
+                        <button class="btn btn-link" onclick="editAddress(this)">Edit</button>
+                    </div>
+                    <!-- Add more address items as needed -->
+                </div>
+                <form id="addressForm" onsubmit="return addAddress(event)">
+                    <div class="form-group">
+                        <label for="address">Add New Address</label>
+                        <input type="text" class="form-control" id="address" placeholder="Enter your address" required>
+                    </div>
+                    <button type="submit" class="btn btn-warning btn-block">+ Add a new address</button>
+                </form>
+                <button id="continueButton" class="btn btn-warning btn-block mt-3" onclick="goToOrderSummary()" disabled>CONTINUE</button>
+            </div>
+        </div>
+
+        <!-- ORDER SUMMARY Section -->
+        <div class="container">
+            <div class="card mb-4">
+                <div class="card-header">
+                    <h5><span class="badge badge-info">Order Summary</span></h5>
+                </div>
+                <div class="card-body">
+                    <div id="orderSummary">
+                        <!-- Example Order Details -->
+                        <div class="row">
+                            <div class="col-md-8">
+                                <h6>Product Name</h6>
+                                <p>Product Description</p>
+                                <p>Price: ₹<span id="productPrice">6888</span></p>
+                                <button class="btn btn-secondary btn-sm" onclick="decreaseQuantity()">-</button>
+                                <span id="quantity">1</span>
+                                <button class="btn btn-secondary btn-sm" onclick="increaseQuantity()">+</button>
+                                <button class="btn btn-danger btn-sm" onclick="removeOrder()">Remove</button>
+                            </div>
+                            <div class="col-md-4 text-right">
+                                <img src="product_image_url_here" alt="Product Image" style="width: 100px;">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="mt-4">
+                        <p style="margin: 6px 0;">Order confirmation email will be sent to your registered email.</p>
+                        <button class="btn btn-primary btn-continue" onclick="showPaymentOptions()">CONTINUE</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Payment Options Section -->
+        <!-- <div class="card mb-4" id="paymentOptionsCard" style="display: none;">
+            <div class="card-header" id="paymentOptionsHeader" onclick="togglePaymentOptions()">
+                <h5><span class="badge badge-primary mr-2">4</span>PAYMENT OPTIONS</h5>
+                <div class="timer">Complete payment in <span id="countdown">00 : 13 : 41</span></div>
+            </div>
+            <div class="card-body" id="paymentOptionsDetails">
+                <form id="paymentForm">
+                    <div class="form-group">
+                        <label for="paymentMethod">Choose a payment method</label>
+                        <div>
+                            <div class="custom-control custom-radio">
+                                <input type="radio" id="upi" name="paymentMethod" class="custom-control-input" checked>
+                                <label class="custom-control-label" for="upi">UPI</label>
+                            </div>
+                            <div class="custom-control custom-radio">
+                                <input type="radio" id="wallet" name="paymentMethod" class="custom-control-input">
+                                <label class="custom-control-label" for="wallet">Wallets</label>
+                            </div>
+                            <div class="custom-control custom-radio">
+                                <input type="radio" id="card" name="paymentMethod" class="custom-control-input">
+                                <label class="custom-control-label" for="card">Credit / Debit / ATM Card</label>
+                            </div>
+                            <div class="custom-control custom-radio">
+                                <input type="radio" id="netBanking" name="paymentMethod" class="custom-control-input">
+                                <label class="custom-control-label" for="netBanking">Net Banking</label>
+                            </div>
+                            <div class="custom-control custom-radio">
+                                <input type="radio" id="emi" name="paymentMethod" class="custom-control-input">
+                                <label class="custom-control-label" for="emi">EMI</label>
+                            </div> -->
+                            <!-- Add more payment options as needed -->
+                        <!-- </div>
+                    </div>
+                    <button type="submit" class="btn btn-primary btn-block">Pay Now</button>
+                </form>
+            </div>
+        </div>
+
+    </div> -->
+
+    <!-- PAYMENT Section -->
+<div class="container">
+    <div class="card mb-4">
+        <div class="card-header">
+            <h5><span class="badge badge-success">Payment Options</span></h5>
+        </div>
+        <div class="card-body">
+            <form id="paymentForm">
+                <!-- Payment Methods -->
+                <div class="form-group">
+                    <label for="paymentMethod">Select Payment Method</label>
+                    <select class="form-control" id="paymentMethod" onchange="showPaymentFields()">
+                        <option value="card">Credit/Debit Card</option>
+                        <option value="netbanking">Net Banking</option>
+                        <option value="upi">UPI</option>
+                        <option value="wallets">Wallets</option>
+                        <option value="cod">Cash on Delivery</option>
+                    </select>
+                </div>
+
+                <!-- Card Details (Initially Hidden) -->
+                <div id="cardDetails" style="display: none;">
+                    <div class="form-group">
+                        <label for="cardNumber">Card Number</label>
+                        <input type="text" class="form-control" id="cardNumber" placeholder="Enter card number">
+                    </div>
+                    <div class="form-group">
+                        <label for="cardExpiry">Expiry Date</label>
+                        <input type="text" class="form-control" id="cardExpiry" placeholder="MM/YY">
+                    </div>
+                    <div class="form-group">
+                        <label for="cardCVV">CVV</label>
+                        <input type="password" class="form-control" id="cardCVV" placeholder="CVV">
+                    </div>
+                </div>
+
+                <!-- Net Banking Details (Initially Hidden) -->
+                <div id="netBankingDetails" style="display: none;">
+                    <div class="form-group">
+                        <label for="bank">Select Bank</label>
+                        <select class="form-control" id="bank">
+                            <option value="sbi">State Bank of India</option>
+                            <option value="hdfc">HDFC Bank</option>
+                            <option value="icici">ICICI Bank</option>
+                            <!-- Add more banks as needed -->
+                        </select>
+                    </div>
+                </div>
+
+                <!-- UPI Details (Initially Hidden) -->
+                <div id="upiDetails" style="display: none;">
+                    <div class="form-group">
+                        <label for="upiId">UPI ID</label>
+                        <input type="text" class="form-control" id="upiId" placeholder="Enter UPI ID">
+                    </div>
+                </div>
+
+                <!-- Wallets Details (Initially Hidden) -->
+                <div id="walletDetails" style="display: none;">
+                    <div class="form-group">
+                        <label for="wallet">Select Wallet</label>
+                        <select class="form-control" id="wallet">
+                            <option value="paytm">Paytm</option>
+                            <option value="phonepe">PhonePe</option>
+                            <option value="mobikwik">MobiKwik</option>
+                            <!-- Add more wallets as needed -->
+                        </select>
+                    </div>
+                </div>
+
+                <!-- Cash on Delivery Message -->
+                <div id="codDetails" style="display: none;">
+                    <p>Cash on Delivery is selected. You will pay in cash upon receiving the product.</p>
+                </div>
+
+                <!-- Pay Button -->
+                <div class="mt-4">
+                    <button type="button" class="btn btn-success" onclick="confirmPayment()">Pay Now</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+
+    <!-- JavaScript -->
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script>
+        // Show OTP field and hide the login form when Continue is clicked
+        function showOtpField(event) {
+            event.preventDefault();
+            document.getElementById("otpSection").style.display = "block";
+        }
+
+        // Show Delivery Address and hide OTP section when CONTINUE is clicked in OTP section
+        function showDeliveryAddress() {
+            document.getElementById("otpSection").style.display = "none";
+            document.getElementById("deliveryAddressCard").scrollIntoView({behavior: "smooth"});
+        }
+
+        // Hide OTP section and show only login when Delivery Address section is clicked
+        function hideOtpSection() {
+            document.getElementById("otpSection").style.display = "none";
+        }
+
+        // Function to enable the CONTINUE button when an address is selected
+        function enableContinue() {
+            document.getElementById("continueButton").disabled = false;
+        }
+
+        // Placeholder function for adding a new address
+        function addAddress(event) {
+            event.preventDefault();
+            alert("New address added.");
+        }
+
+        // Placeholder function for editing an address
+        function editAddress(button) {
+            alert("Edit address functionality.");
+        }
+
+        // Function to navigate to the Order Summary section
+        function goToOrderSummary() {
+            document.getElementById("orderSummary").scrollIntoView({behavior: "smooth"});
+        }
+
+        // Placeholder functions for the order summary
+function decreaseQuantity() {
+    let quantityElement = document.getElementById("quantity");
+    let quantity = parseInt(quantityElement.textContent);
+    if (quantity > 1) {
+        quantity--;
+        quantityElement.textContent = quantity;
+    }
+}
+
+function increaseQuantity() {
+    let quantityElement = document.getElementById("quantity");
+    let quantity = parseInt(quantityElement.textContent);
+    quantity++;
+    quantityElement.textContent = quantity;
+}
+
+function removeOrder() {
+    let orderSummary = document.getElementById("orderSummary");
+    orderSummary.innerHTML = "<p>Your order has been removed.</p>";
+}
+
+function showPaymentOptions() {
+    alert("Proceeding to payment options...");
+    // Add your logic to navigate to the payment section or load payment options
+}
+
+
+// Function to show relevant fields based on selected payment method
+function showPaymentFields() {
+    let paymentMethod = document.getElementById("paymentMethod").value;
+
+    // Hide all fields initially
+    document.getElementById("cardDetails").style.display = "none";
+    document.getElementById("netBankingDetails").style.display = "none";
+    document.getElementById("upiDetails").style.display = "none";
+    document.getElementById("walletDetails").style.display = "none";
+    document.getElementById("codDetails").style.display = "none";
+
+    // Show the selected payment method fields
+    if (paymentMethod === "card") {
+        document.getElementById("cardDetails").style.display = "block";
+    } else if (paymentMethod === "netbanking") {
+        document.getElementById("netBankingDetails").style.display = "block";
+    } else if (paymentMethod === "upi") {
+        document.getElementById("upiDetails").style.display = "block";
+    } else if (paymentMethod === "wallets") {
+        document.getElementById("walletDetails").style.display = "block";
+    } else if (paymentMethod === "cod") {
+        document.getElementById("codDetails").style.display = "block";
+    }
+}
+
+// Function to handle payment confirmation
+function confirmPayment() {
+    let paymentMethod = document.getElementById("paymentMethod").value;
+    alert("Payment method selected: " + paymentMethod + "\nProcessing payment...");
+    // Add logic to process the payment and navigate to the success page or order confirmation page
+}
+
+
+    </script>
+</body>
+</html>
