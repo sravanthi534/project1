@@ -288,6 +288,9 @@
             <img th:src="@{/images/regis.jpg}" alt="Welcome Image" class="welcome-image">
         </div>
         <div class="right-side">
+			<div th:if="${message}" class="alert alert-warning" style="color: red; text-align: center; margin-bottom: 20px;">
+				<p th:text="${message}"></p>
+				</div>
             <form class="registration-form" th:action="@{/api/register-user}" method="post">
                 <h2>Create Account</h2>
                 
@@ -324,7 +327,7 @@
 		document.getElementById('continue-button').addEventListener('click', function() {
 		    const email = document.getElementById('email-input').value;
 
-		    fetch('/api/send-verification', {
+		    fetch('/api/register-send-verification', {
 		        method: 'POST',
 		        headers: {
 		            'Content-Type': 'application/x-www-form-urlencoded',

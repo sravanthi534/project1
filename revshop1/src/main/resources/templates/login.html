@@ -319,33 +319,44 @@
     <script th:inline="javascript">
         // Similar logic to handle OTP section visibility and email submission for login
 
-        document.getElementById('continue-button').addEventListener('click', function() {
-            const email = document.getElementById('email-input').value;
+     document.getElementById('continue-button').addEventListener('click', function() {
+    const email = document.getElementById('email-input').value;
 
-            fetch('/api/send-verification', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/x-www-form-urlencoded',
-                },
-                body: new URLSearchParams({
-                    email: email  // Pass the email as form data
-                }),
-            })
-            .then(response => response.json())
-            .then(data => {
-                if (data.success) {
-                    // Show OTP section and update UI if the email is sent successfully
-                    document.getElementById('otp-section').classList.add('visible');
-                    document.getElementById('continue-button').style.display = 'none';
-                    document.getElementById('email-input').disabled = true;
-                    document.getElementById('change-email').style.display = 'inline-block';
-                }
-            })
-            .catch((error) => {
-                console.error('Error:', error.message);
-                alert('An error occurred: ' + error.message);
-            });
-        });
+    fetch('/api/login-send-verification', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/x-www-form-urlencoded',
+        },
+        body: new URLSearchParams({
+            email: email  // Pass the email as form data
+        }),
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            // Show OTP section and update UI if the email is registered
+            document.getElementById('otp-section').classList.add('visible');
+            document.getElementById('continue-button').style.display = 'none';
+            document.getElementById('email-input').disabled = true;
+            document.getElementById('change-email').style.display = 'inline-block';
+        } else if (data.error) {
+            if (data.redirect) {
+                // Redirect to registration if the user is not registered
+                alert(data.error);
+                window.location.href = data.redirect;
+            } else {
+                alert(data.error);
+            }
+        }
+    })
+    .catch((error) => {
+        console.error('Error:', error.message);
+        alert('An error occurred: ' + error.message);
+    });
+});
+
+
+
 
 		// JavaScript to handle OTP verification and login
 		document.getElementById('login-button').addEventListener('click', function(event) {
