@@ -1,0 +1,275 @@
+/* Global reset and basic styles */
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: 'Arial', sans-serif;
+    background-color: #f4f7fa;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    padding: 20px;
+}
+
+/* Main container styling */
+.container {
+    display: flex;
+    background-color: #ffffff;
+    border-radius: 20px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+    width: 90%;
+    max-width: 1000px;
+    overflow: hidden;
+}
+
+/* Left side styling */
+.left-side {
+    background-color: #4863A0;
+    color: white;
+    padding: 50px;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    border-top-left-radius: 20px;
+    border-bottom-left-radius: 20px;
+}
+
+.left-side h1 {
+    font-size: 38px;
+    font-weight: bold;
+    margin-bottom: 20px;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.2);
+}
+
+.left-side p {
+    font-size: 18px;
+    margin-bottom: 30px;
+    line-height: 1.5;
+}
+
+.welcome-image {
+    margin-top: 30px;
+    max-width: 80%; 
+    height: auto;
+    border-radius: 50%;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s ease;
+}
+
+.welcome-image:hover {
+    transform: scale(1.05);
+}
+
+/* Right side form styling */
+.right-side {
+    padding: 50px;
+    flex: 1;
+    background-color: #f8f9fa;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    border-top-right-radius: 20px;
+    border-bottom-right-radius: 20px;
+}
+
+.registration-form {
+    width: 100%;
+    max-width: 400px;
+    display: flex;
+    flex-direction: column;
+}
+
+.registration-form h2 {
+    margin-bottom: 25px;
+    font-size: 28px;
+    text-align: center;
+    color: #343a40;
+}
+
+.input-group {
+    margin-bottom: 20px;
+    position: relative;
+}
+
+.input-group input {
+    width: 100%;
+    padding: 15px 20px;
+    border: 2px solid #ced4da;
+    border-radius: 30px;
+    transition: border-color 0.3s, box-shadow 0.3s;
+    font-size: 16px;
+}
+
+.input-group input:focus {
+    border-color: #007bff;
+    box-shadow: 0 0 8px rgba(0, 123, 255, 0.5);
+    outline: none;
+}
+
+/* "Change Email" link styling */
+#change-email {
+    display: none;
+    margin-left: 10px;
+    font-size: 14px;
+    color: #007bff;
+    cursor: pointer;
+    position: absolute;
+    right: 10px; /* Positioned after the email field */
+    top: 50%;
+    transform: translateY(-50%);
+}
+
+#change-email:hover {
+    text-decoration: underline;
+}
+
+/* Button styling */
+button {
+    padding: 15px;
+    background-color: #728fce;
+    color: white;
+    border: none;
+    border-radius: 30px;
+    cursor: pointer;
+    font-size: 18px;
+    width: 100%;
+    transition: background-color 0.3s, transform 0.2s;
+    box-shadow: 0 5px 15px rgba(225, 101, 57, 0.3);
+}
+
+button:hover {
+    background-color: #728fce;
+    transform: translateY(-3px);
+}
+
+.button-container {
+    display: flex;
+    justify-content: center;
+    margin-top: 20px;
+}
+
+/* Resend OTP styling */
+.resend-otp {
+    color: #007bff;
+    cursor: pointer;
+    font-size: 14px;
+    margin-left: 10px;
+    position: relative;
+    top: 4px; /* Align with OTP input */
+}
+
+.resend-otp:hover {
+    text-decoration: underline;
+}
+
+/* Message section styling */
+.message {
+    margin-top: 30px;
+    text-align: center;
+    font-size: 14px;
+    color: #6c757d;
+}
+
+.message a {
+    color: #007bff;
+    text-decoration: none;
+}
+
+.message a:hover {
+    text-decoration: underline;
+}
+
+/* Hide the OTP section initially */
+#otp-section {
+    display: none;
+}
+
+/* Add spacing to the hidden section */
+.hidden-section {
+    margin-top: 25px;
+}
+
+/* Responsive Styles */
+
+/* Adjust for tablets and smaller devices */
+@media (max-width: 768px) {
+    .container {
+        flex-direction: column;
+        max-width: 600px;
+        height: auto;
+    }
+
+    .left-side, .right-side {
+        border-radius: 20px;
+    }
+
+    .left-side {
+        padding: 30px;
+        border-bottom-left-radius: 0;
+        border-top-right-radius: 20px;
+    }
+
+    .right-side {
+        padding: 30px;
+        border-top-left-radius: 0;
+        border-bottom-right-radius: 20px;
+    }
+
+    .welcome-image {
+        max-width: 60%;
+    }
+
+    .registration-form h2 {
+        font-size: 24px;
+    }
+
+    .input-group input {
+        padding: 12px 15px;
+        font-size: 14px;
+    }
+
+    button {
+        font-size: 16px;
+    }
+}
+
+/* Adjust for mobile devices */
+@media (max-width: 480px) {
+    .container {
+        width: 100%;
+    }
+
+    .left-side {
+        padding: 20px;
+    }
+
+    .right-side {
+        padding: 20px;
+    }
+
+    .welcome-image {
+        max-width: 50%;
+    }
+
+    .registration-form h2 {
+        font-size: 22px;
+    }
+
+    .input-group input {
+        padding: 10px 15px;
+        font-size: 14px;
+    }
+
+    button {
+        font-size: 16px;
+        padding: 10px;
+    }
+}
