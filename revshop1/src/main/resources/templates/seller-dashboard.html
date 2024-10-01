@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="ISO-8859-1">
+    <title>Seller Dashboard</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;
+        }
+        header {
+            background-color: #333;
+            color: #fff;
+            padding: 10px 0;
+            text-align: center;
+        }
+        nav {
+            margin: 20px 0;
+            text-align: center;
+        }
+        nav a {
+            margin: 0 15px;
+            text-decoration: none;
+            color: #333;
+            font-weight: bold;
+            padding: 10px 20px;
+            background-color: #ddd;
+            border-radius: 5px;
+        }
+        nav a:hover {
+            background-color: #bbb;
+        }
+        section {
+            text-align: center;
+            margin-top: 40px;
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    <h1>Seller Dashboard</h1>
+</header>
+
+<nav>
+    <a th:href="@{/add-product}">
+    
+    Add Product</a>
+    
+    
+    <a th:href="@{/view-orders}">View Orders</a>
+</nav>
+<form action="#" th:action="@{/display-products}" method="get" >
+    <input type="hidden" th:value="${session.loggedInSeller.sellerId}" name="sellerId"/>
+    <button type="submit">display Product</button>
+    </form>
+
+<section>
+    <h2>Welcome to the Seller Dashboard</h2>
+    <p>Select an option from above to manage your products or view your orders.</p>
+</section>
+
+</body>
+</html>

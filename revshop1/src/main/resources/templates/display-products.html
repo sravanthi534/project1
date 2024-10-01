@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="ISO-8859-1">
+    <title>Display Products</title>
+</head>
+<body>
+
+<header>
+    <h1>Products List</h1>
+</header>
+
+<nav>
+    <a th:href="@{/seller-dahboard}">Dashboard</a>
+    <a th:href="@{/add-product}">Add Product</a>
+    <a th:href="@{/view-orders}">View Orders</a>
+</nav>
+
+<section>
+
+    <form action="#" th:action="@{/search-products}" method="get">
+    <input type="hidden" th:value="${session.loggedInSeller.sellerId}" name="sellerId"/> 
+    <input type="text" name="query" placeholder="Search by name, description, or category" required />
+    <button type="submit">Search</button>
+</form>
+    
+    <!-- Display success message if any -->
+    <div th:if="${message}">
+        <p th:text="${message}" style="color:green;"></p>
+    </div>
+
+    <!-- Display products in a table -->
+    <table>
+        <thead>
+            <tr>
+                <th>Product Name</th>
+                <th>Image</th>
+                <th>Description</th>
+                <th>Price</th>
+                <th>Discount Price</th>
+                <th>Quantity</th>
+                <th>Category</th>
+                <th>Threshold</th>
+                
+                <th>Actions</th> <!-- New column for actions -->
+            </tr>
+        </thead>
+        <tbody>
+            <tr th:each="product : ${products}">
+                <td th:text="${product.name}"></td>
+                <td><img th:src="${product.image}"/></td>
+                <td th:text="${product.description}"></td>
+                <td th:text="${product.price}"></td>
+                <td th:text="${product.discountprice}"></td>
+                <td th:text="${product.quantity}"></td>
+                <td th:text="${product.categoryname}"></td>
+                <td th:text="${product.threshold}"></td>
+                
+                <td>
+                    <a th:href="@{/edit-product(id=${product.productId})}">Edit</a> | 
+                    <a href="#" th:onclick="'deleteProduct(' + ${product.productId} + '); return false;'">Delete</a>
+                    
+                    
+                    
+                </td>
+            </tr>
+        </tbody>
+    </table>
+</section>
+<script>
+function deleteProduct(productId) {
+    fetch(`/delete-product?id=${productId}`, {
+        method: 'DELETE'
+    })
+    .then(response => {
+        if (response.ok) {
+            // Reload the page or update the UI
+            window.location.reload();
+        } else {
+            alert('Error deleting product');
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+    });
+}
+
+</script>
+
+
+</body>
+</html>
