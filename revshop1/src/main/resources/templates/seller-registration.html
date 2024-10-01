@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="styles.css">
+    <title>Seller Registration</title>
+</head>
+<body>
+    <div class="container">
+        <div class="left-side">
+            <h1>Join Us as a Seller!</h1>
+            <p>Register to manage your products, track orders, and grow your business with RevShop!</p>
+            <img src="#" alt="Seller Image" class="welcome-image">
+        </div>
+        <div class="right-side">
+            <!-- Thymeleaf form binding with model attribute 'seller' -->
+            <form class="registration-form" th:action="@{/sellerRegistration}" method="post" th:object="${seller}">
+                <h2>Seller Registration</h2>
+
+                <!-- Inputs for Seller details -->
+                <div class="input-group">
+                    <input type="text" th:field="*{firstName}" placeholder="First Name" required>
+                </div>
+                <div class="input-group">
+                    <input type="text" th:field="*{lastName}" placeholder="Last Name" required>
+                </div>
+                <div class="input-group">
+                    <input type="email" th:field="*{email}" placeholder="Email Address" required>
+                </div>
+                <div class="input-group">
+                    <input type="password" th:field="*{password}" id="password-input" placeholder="Password" required>
+                    <small id="password-error" style="color: red; display: none;">Password must contain at least 8 characters, an uppercase letter, a lowercase letter, a number, and a special character.</small>
+                </div>
+                <div class="input-group">
+                    <input type="tel" th:field="*{phoneNumber}" placeholder="Phone Number" required>
+                </div>
+                <div class="input-group">
+                    <input type="text" th:field="*{companyName}" placeholder="Company Name" required>
+                </div>
+                <div class="input-group">
+                    <textarea th:field="*{companyDescription}" placeholder="Company Description" rows="3" required></textarea>
+                </div>
+                <div class="input-group">
+                    <input type="text" th:field="*{companyAddress}" placeholder="Business Address" required>
+                </div>
+                <div class="input-group">
+                    <input type="text" th:field="*{state}" placeholder="State" required>
+                </div>
+                <div class="input-group">
+                    <input type="text" th:field="*{zipcode}" placeholder="Zip Code" required>
+                </div>
+
+                <!-- Signup Button -->
+                <div class="button-container">
+                    <button type="submit" id="signup-button">Sign Up</button>
+                </div>
+
+                <!-- Login redirect message -->
+                <div class="message">
+                    <p>Already have an account? <a th:href="@{/sellerLogin}">Login</a></p>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- JavaScript for password validation -->
+    <script>
+        document.querySelector('#signup-button').addEventListener('click', function() {
+            alert('Registration form submitted!');
+        });
+
+        const passwordInput = document.getElementById('password-input');
+        const passwordError = document.getElementById('password-error');
+
+        passwordInput.addEventListener('input', function() {
+            const password = passwordInput.value;
+            const passwordPattern = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*\W).{8,}$/;
+
+            if (!passwordPattern.test(password)) {
+                passwordError.style.display = 'block';
+            } else {
+                passwordError.style.display = 'none';
+            }
+        });
+    </script>
+</body>
+</html>

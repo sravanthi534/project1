@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="styles.css">
+    <title>Seller Login</title>
+</head>
+<body>
+    <div class="container">
+        <div class="left-side">
+            <h1>Welcome Back, Seller!</h1>
+            <p>Log in to manage your products, track orders, and grow your business with RevShop!</p>
+            <img src="#" alt="Seller Image" class="welcome-image">
+        </div>
+        <div class="right-side">
+            <!-- Thymeleaf form binding with model attribute 'seller' -->
+            <form class="login-form" th:action="@{/sellerLogin}" method="post" th:object="${seller}">
+                <h2>Seller Login</h2>
+                
+                <!-- Email input (Thymeleaf bound to the 'email' field of Seller object) -->
+                <div class="input-group">
+                    <input type="email" th:field="*{email}" placeholder="Email Address" required>
+                </div>
+                
+                <!-- Password input (Thymeleaf bound to the 'password' field of Seller object) -->
+                <div class="input-group">
+                    <input type="password" th:field="*{password}" placeholder="Password" required>
+                </div>
+
+                <!-- Login button -->
+                <div class="button-container">
+                    <button type="submit" id="login-button">Login</button>
+                </div>
+
+                <!-- Forgot Password link -->
+                <div class="additional-options">
+                    <span class="forgot-password"><a href="#">Forgot Password?</a></span>
+                </div>
+
+                <!-- Registration redirect link -->
+                <div class="message">
+                    <p>Not a seller yet? <a th:href="@{/sellerRegistration}">Register</a></p>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- JavaScript for Forgot Password behavior -->
+    <script>
+        document.querySelector('.forgot-password a').addEventListener('click', function() {
+            alert('Redirecting to password recovery page...');
+        });
+    </script>
+</body>
+</html>
