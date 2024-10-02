@@ -39,11 +39,12 @@ public class ProductService {
 	    
 	   repo.save(product);  
 	}
-//	public List<Product> getAllProducts() {
-//		
-//	        return repo.findAll();  
-//	    
-//	}
+	
+	public List<Product> getAllProducts() {
+		
+	        return repo.findAll();  
+	    
+	}
 	
 
 //	public List<Product> searchProducts(String query,Long sellerId) {

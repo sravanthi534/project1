@@ -50,4 +50,12 @@ public class ProductController {
         return "display-products";  
     }
 
+    
+ // Method to display products on the homepage
+    @GetMapping("/homepage")
+    public String showProducts(Model model) {
+        List<Product> products = productService.getAllProducts();
+        model.addAttribute("products", products); // Add product list to the model
+        return "homepage";  // Refers to a Thymeleaf template named "homepage.html"
+    }
 }
