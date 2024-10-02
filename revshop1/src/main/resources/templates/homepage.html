@@ -36,6 +36,13 @@
         </p>
         <p>Category: <span th:text="${product.categoryname}"></span></p>
         <p>Quantity Available: <span th:text="${product.quantity}"></span></p>
+		
+		<form action="/cart/add" method="post">
+		    <input type="hidden" name="productId" th:value="${product.productId}">
+		    <input type="number" name="quantity" value="1" min="1">
+		    <button type="submit">Add to Cart</button>
+		</form>
+
     </div>
 
     <div class="clear"></div>
