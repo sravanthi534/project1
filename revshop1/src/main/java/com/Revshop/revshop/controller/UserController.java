@@ -77,7 +77,7 @@ public class UserController {
                     session.setAttribute("email", verifiedEmail);
 
                     // Redirect the user to the profile page
-                    return "redirect:/profile";  
+                    return "redirect:/homepage";  
                 } else {
                     return "User does not exist. Please register.";
                 }

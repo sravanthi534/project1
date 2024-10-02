@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Your Cart</title>
+    <style>
+        /* Basic styles for the cart layout */
+        body {
+            font-family: Arial, sans-serif;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+        }
+        th, td {
+            border: 1px solid #ccc;
+            padding: 10px;
+            text-align: left;
+        }
+        th {
+            background-color: #f4f4f4;
+        }
+        .price-details {
+            border: 1px solid #ccc;
+            padding: 10px;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Your Cart</h1>
+
+    <!-- Cart Items Section -->
+    <div>
+        <h2>Cart Items</h2>
+        <table>
+            <thead>
+                <tr>
+                    <th>Product</th>
+                    <th>Quantity</th>
+                    <th>Price</th>
+                    <th>Total</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr th:each="cartItem : ${cartItems}">
+                    <td>
+                        <img th:src="@{${cartItem.product.image}}" alt="Product Image" width="100" />
+                        <span th:text="${cartItem.product.name}"></span>
+                    </td>
+                    <td>
+                        <form action="/cart/update-quantity" method="post">
+                            <input type="hidden" name="productId" th:value="${cartItem.product.productId}" />
+                            <button type="submit" name="increase" value="false">-</button>
+                            <span th:text="${cartItem.quantity}"></span>
+                            <button type="submit" name="increase" value="true">+</button>
+                        </form>
+                    </td>
+                    <td th:text="${cartItem.product.price}"></td>
+                    <td th:text="${cartItem.product.price * cartItem.quantity}"></td>
+                    <td>
+                        <form action="/cart/save-for-later" method="post">
+                            <input type="hidden" name="productId" th:value="${cartItem.product.productId}" />
+                            <button type="submit">Save for Later</button>
+                        </form>
+                        <form action="/cart/remove" method="post">
+                            <input type="hidden" name="productId" th:value="${cartItem.product.productId}" />
+                            <button type="submit">Remove</button>
+                        </form>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Saved for Later Section -->
+    <div>
+        <h2>Saved for Later</h2>
+        <table>
+            <thead>
+                <tr>
+                    <th>Product</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr th:each="savedItem : ${savedItems}">
+                    <td>
+                        <img th:src="@{${savedItem.product.image}}" alt="Product Image" width="100" />
+                        <span th:text="${savedItem.product.name}"></span>
+                    </td>
+                    <td>
+                        <form action="/cart/move-to-cart" method="get">
+                            <input type="hidden" name="productId" th:value="${savedItem.product.productId}" />
+                            <button type="submit">Move to Cart</button>
+                        </form>
+                    </td>
+                </tr>
+                <tr th:if="${#lists.isEmpty(savedItems)}">
+                    <td colspan="2">No items saved for later.</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Price Details Section -->
+    <div class="price-details">
+        <h2>Price Details</h2>
+        <p>Total Price: <span th:text="${totalPrice}"></span></p>
+        <p>Discount: <span th:text="${discount}"></span></p>
+        <p>Delivery Charges: <span th:text="${deliveryCharges}"></span></p>
+        <p><strong>Total Amount: <span th:text="${totalAmount}"></span></strong></p>
+        <form action="/checkout" method="post">
+            <button type="submit">Place Order</button>
+        </form>
+    </div>
+</body>
+</html>
