@@ -46,5 +46,32 @@
     </div>
 
     <div class="clear"></div>
+    <script>
+
+    // jQuery to handle modal data population
+    $(document).ready(function() {
+        $('#productModal').on('show.bs.modal', function(event) {
+            var button = $(event.relatedTarget); // Button that triggered the modal
+            var imgSrc = button.data('img'); // Extract info from data-* attributes
+            var title = button.data('title');
+            var description = button.data('description');
+            var price = button.data('price');
+
+            // Update the modal's content
+            var modal = $(this);
+            modal.find('#modalProductImg').attr('src', imgSrc);
+            modal.find('#productModalLabel').text(title);
+            modal.find('#modalProductDescription').text(description);
+            modal.find('#modalProductPrice').text(price);
+        });
+    });
+    document.querySelector('.dropbtn').addEventListener('click', function(e) {
+        e.preventDefault();
+        let dropdown = this.closest('.dropdown');
+        dropdown.classList.toggle('active');
+    });
+    
+
+    </script>
 </body>
 </html>

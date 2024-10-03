@@ -2,6 +2,7 @@ package com.Revshop.revshop.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import com.Revshop.revshop.repository.UserRepository;
+import com.Revshop.revshop.service.UserService;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.stereotype.Controller;
 import jakarta.servlet.http.HttpSession;
@@ -16,6 +17,9 @@ public class UserController {
 	
 	@Autowired
     private UserRepository userRepository;
+	
+	@Autowired
+    private UserService userService;
 
     // Get mapping to show the registration page
     @GetMapping("/registration")
@@ -26,8 +30,10 @@ public class UserController {
 
     @PostMapping("/api/register-user")
     @ResponseBody
-    public String registerUser(@RequestBody User user, HttpSession session) {
-        // Retrieve the verified email from session
+    public Map<String, String> registerUser(@RequestBody User user, HttpSession session) {
+        
+    	Map<String, String> response = new HashMap<>();
+    	// Retrieve the verified email from session
         String verifiedEmail = (String) session.getAttribute("email");
 
         if (verifiedEmail != null) {
@@ -38,16 +44,21 @@ public class UserController {
             user.setUpdatedAt(LocalDateTime.now());
 
             // Save the user to the repository (database)
-            userRepository.save(user);
+           User savedUser = userRepository.save(user);
+           
+           session.setAttribute("userId", savedUser.getUserId());
 
             // Clear session after registration
             session.removeAttribute("otp");
             session.removeAttribute("email");
 
-            // Redirect to index page after successful registration
-            return "redirect:/index"; // Ensure index.html exists in templates
+            response.put("status", "success");
+            response.put("redirect", "/profile");
+            return response;
         } else {
-            return "Email verification required!";
+            response.put("status", "error");
+            response.put("message", "Email verification required!");
+            return response;
         }
     }
     
@@ -58,10 +69,10 @@ public class UserController {
    
     @PostMapping("/api/login-user")
     @ResponseBody
-    public String loginUser(@RequestBody Map<String, String> requestBody, HttpSession session) {
+    public Map<String, String> loginUser(@RequestBody Map<String, String> requestBody, HttpSession session, Model model) {
+    	Map<String, String> response = new HashMap<>();
         String savedOtp = (String) session.getAttribute("otp");
         String verifiedEmail = (String) session.getAttribute("email");
-
         String enteredOtp = requestBody.get("otp");
 
         if (verifiedEmail != null && savedOtp != null) {
@@ -74,18 +85,27 @@ public class UserController {
                     userRepository.save(user);
 
                     // Set the email in the session for further use
+                    session.setAttribute("userId", user.getUserId());
                     session.setAttribute("email", verifiedEmail);
-
-                    // Redirect the user to the profile page
-                    return "redirect:/homepage";  
+                    
+ 
+                    response.put("status", "success");
+                    response.put("redirect", "/home");
+                    return response;
                 } else {
-                    return "User does not exist. Please register.";
+                	response.put("status", "error");
+                    response.put("message", "Please register to login.");
+                    return response;
                 }
             } else {
-                return "Invalid OTP!";
+            	 response.put("status", "error");
+                 response.put("message", "Invalid OTP!");
+                 return response;
             }
         } else {
-            return "Email verification required!";
+        	 response.put("status", "error");
+             response.put("message", "Email verification required!");
+             return response;
         }
     }
 
@@ -93,75 +113,122 @@ public class UserController {
     
     @GetMapping("/profile")
     public String getUserProfile(HttpSession session, Model model) {
-        String email = (String) session.getAttribute("email");
+        Long userId = (Long) session.getAttribute("userId");
 
-        if (email != null) {
-            Optional<User> user = userRepository.findByEmail(email);
+        if (userId != null) {
+            Optional<User> user = userService.getUserById(userId);
             if (user.isPresent()) {
                 model.addAttribute("user", user.get());
-                return "profile";
+                
+                List<String> states = Arrays.asList(
+                        "Andhra Pradesh", "Arunachal Pradesh", "Assam", "Bihar", "Chhattisgarh", 
+                        "Goa", "Gujarat", "Haryana", "Himachal Pradesh", "Jharkhand", "Karnataka", 
+                        "Kerala", "Madhya Pradesh", "Maharashtra", "Manipur", "Meghalaya", "Mizoram", 
+                        "Nagaland", "Odisha", "Punjab", "Rajasthan", "Sikkim", "Tamil Nadu", 
+                        "Telangana", "Tripura", "Uttar Pradesh", "Uttarakhand", "West Bengal",
+                        "Andaman and Nicobar Islands", "Chandigarh", "Dadra and Nagar Haveli", 
+                        "Daman and Diu", "Lakshadweep", "Delhi", "Puducherry"
+                    );
+                    model.addAttribute("states", states);
+                return "user-profile";
             }
         }
         return "redirect:/login";  // Redirect to login if email is not found
     }
 
 
-    @PostMapping("/update-profile")
+    @PostMapping("/api/update-profile")
     @ResponseBody
-    public String updateProfile(@RequestBody Map<String, String> updates, HttpSession session) {
-        String email = (String) session.getAttribute("email");
+    public Map<String, String> updateProfile(@RequestBody Map<String, String> updatedFields, HttpSession session) {
+        Map<String, String> response = new HashMap<>();
+        Long userId = (Long) session.getAttribute("userId");
 
-        if (email != null) {
-            Optional<User> existingUser = userRepository.findByEmail(email);
+        if (userId != null) {
+            Optional<User> existingUser = userService.getUserById(userId);
             if (existingUser.isPresent()) {
                 User user = existingUser.get();
 
-                // Update user details based on incoming data
-                if (updates.containsKey("firstName")) {
-                    user.setFirstName(updates.get("firstName"));
+                // Update the fields only if they are present in the request
+                if (updatedFields.containsKey("firstName")) {
+                    user.setFirstName(updatedFields.get("firstName"));
                 }
-                if (updates.containsKey("lastName")) {
-                    user.setLastName(updates.get("lastName"));
+                if (updatedFields.containsKey("lastName")) {
+                    user.setLastName(updatedFields.get("lastName"));
                 }
-                if (updates.containsKey("email")) {
-                    user.setEmail(updates.get("email"));
+                if (updatedFields.containsKey("email")) {
+                    user.setEmail(updatedFields.get("email"));
                 }
-                if (updates.containsKey("phoneNumber")) {
-                    user.setPhoneNumber(updates.get("phoneNumber"));
+                if (updatedFields.containsKey("phoneNumber")) {
+                    user.setPhoneNumber(updatedFields.get("phoneNumber"));
                 }
+                if (updatedFields.containsKey("gender")) {
+                    user.setGender(updatedFields.get("gender"));
+                }
+                
+                // Save the updated user information
+                userService.updateUserDetails(user);
 
-                user.setUpdatedAt(LocalDateTime.now());
-                userRepository.save(user);
-                return "Profile updated successfully";
+                response.put("status", "success");
+                return response;
             }
         }
-        return "User not found";
+        response.put("status", "error");
+        response.put("message", "User not found or session expired.");
+        return response;
     }
 
-    @PostMapping("/update-address")
+    @PostMapping("/profile/update-address")
     @ResponseBody
-    public String updateAddress(@RequestBody Map<String, String> addressData, HttpSession session) {
-        String email = (String) session.getAttribute("email");
+    public Map<String, String> updateAddress(@RequestBody User updatedAddress, HttpSession session) {
+        Map<String, String> response = new HashMap<>();
+        Long userId = (Long) session.getAttribute("userId");
 
-        if (email != null) {
-            Optional<User> existingUser = userRepository.findByEmail(email);
+        if (userId != null) {
+            Optional<User> existingUser = userService.getUserById(userId);
             if (existingUser.isPresent()) {
                 User user = existingUser.get();
+                user.setFullName(updatedAddress.getFullName());
+                user.setPhoneNumber(updatedAddress.getPhoneNumber());
+                user.setAddress(updatedAddress.getAddress());
+                user.setLocality(updatedAddress.getLocality());
+                user.setPincode(updatedAddress.getPincode());
+                user.setCity(updatedAddress.getCity());
+                user.setState(updatedAddress.getState());
+                user.setLandmark(updatedAddress.getLandmark());
+                user.setAddressType(updatedAddress.getAddressType());
 
-                // Update address-related fields
-                user.setAddress(addressData.get("address"));
-                user.setLocality(addressData.get("locality"));
-                user.setCity(addressData.get("city"));
-                user.setState(addressData.get("state"));
-                user.setPincode(Integer.parseInt(addressData.get("pincode")));
-                user.setAddressType(addressData.get("addressType"));
+                // Save the updated address information
+                userService.updateUserDetails(user);
 
-                user.setUpdatedAt(LocalDateTime.now());
-                userRepository.save(user);
-                return "Address updated successfully";
+                response.put("status", "success");
+                return response;
             }
         }
-        return "User not found";
+        response.put("status", "error");
+        response.put("message", "User not found or session expired.");
+        return response;
+    }
+    
+    
+    @DeleteMapping("/api/delete-account")
+    @ResponseBody
+    public Map<String, String> deleteAccount(HttpSession session) {
+        Map<String, String> response = new HashMap<>();
+        Long userId = (Long) session.getAttribute("userId");
+
+        if (userId != null) {
+            // Delete user from the database
+            userService.deleteUserById(userId);
+
+            // Invalidate session
+            session.invalidate();
+
+            response.put("status", "success");
+        } else {
+            response.put("status", "error");
+            response.put("message", "User not found or session expired.");
+        }
+        return response;
     }
 
 

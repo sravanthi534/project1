@@ -45,7 +45,7 @@ import java.time.LocalDate;
 
 	    @Column(name = "registration_date")
 	    private LocalDate registrationDate;
-
+        private String image;
 	    public Seller(Long sellerId, String firstName, String lastName, String email, String password,
 				String phoneNumber, String companyName, String companyDescription, String companyAddress, String state,
 				String zipcode, LocalDate registrationDate) {
@@ -160,6 +160,14 @@ import java.time.LocalDate;
 
 		public void setRegistrationDate(LocalDate registrationDate) {
 			this.registrationDate = registrationDate;
+		}
+
+		public String getImage() {
+			return image;
+		}
+
+		public void setImage(String image) {
+			this.image = image;
 		}
 	    
 	    
