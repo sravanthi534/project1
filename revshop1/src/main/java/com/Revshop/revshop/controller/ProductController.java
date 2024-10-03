@@ -60,6 +60,7 @@ public class ProductController {
         return "edit-product";
     }
 
+    
     @PostMapping("/edit-product")
     public String editProduct(@ModelAttribute("product") Product product, HttpSession session, Model model) {
         Seller loggedInSeller = (Seller) session.getAttribute("loggedInSeller");
@@ -68,7 +69,7 @@ public class ProductController {
             productService.updateProduct(product); 
 
             model.addAttribute("message", "Product updated successfully!");  
-            return "sellerDahboard";
+            return "edit-product";
         }
         model.addAttribute("loginError", "You must log in to edit a product.");
         return "loginSeller"; 
@@ -94,4 +95,30 @@ public class ProductController {
     }
     
     
+    
+ // Method to display products on the homepage
+    @GetMapping("/homepage")
+    public String showProducts(Model model) {
+        List<Product> products = productService.getAllProducts();
+        model.addAttribute("products", products); // Add product list to the model
+        return "homepage";  // Refers to a Thymeleaf template named "homepage.html"
+    }
+    
+    
+        
+    	@GetMapping("/searchall")
+    	public String getAllProducts(@RequestParam("query") String query, Model model) {
+    	    System.out.println("Search Query: " + query); // Debugging statement
+
+    	    List<Product> products = productService.searchProductsByNameOrCategory(query);
+
+    	    // Add products and message to the model
+    	    model.addAttribute("products", products);
+    	    model.addAttribute("message", products.isEmpty() ? "No products found." : null);
+
+    	    return "display-all-products"; 
+    	}
+
+    
+
 }

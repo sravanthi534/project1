@@ -298,10 +298,10 @@
                 <button type="button" id="continue-button">Continue</button>
 
                 <!-- OTP Section -->
-                <div id="otp-section" class="hidden-section">
+                <div id="otp-section" class="hidden-section" >
                     <div class="input-group">
                         <input type="text" id="otp-input" name="otp" placeholder="Enter OTP" required>
-                        <span class="resend-otp">Resend OTP</span>
+                        <!--<span class="resend-otp">Resend OTP</span> -->
                     </div>
 
                     <div class="button-container">
@@ -317,42 +317,42 @@
     </div>
 
     <script th:inline="javascript">
-        // Similar logic to handle OTP section visibility and email submission for login
+ // Similar logic to handle OTP section visibility and email submission for login
 
-     document.getElementById('continue-button').addEventListener('click', function() {
+    document.getElementById('continue-button').addEventListener('click', function() {
     const email = document.getElementById('email-input').value;
 
-    fetch('/api/login-send-verification', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/x-www-form-urlencoded',
-        },
-        body: new URLSearchParams({
-            email: email  // Pass the email as form data
-        }),
-    })
-    .then(response => response.json())
-    .then(data => {
-        if (data.success) {
-            // Show OTP section and update UI if the email is registered
-            document.getElementById('otp-section').classList.add('visible');
-            document.getElementById('continue-button').style.display = 'none';
-            document.getElementById('email-input').disabled = true;
-            document.getElementById('change-email').style.display = 'inline-block';
-        } else if (data.error) {
-            if (data.redirect) {
-                // Redirect to registration if the user is not registered
-                alert(data.error);
-                window.location.href = data.redirect;
-            } else {
-                alert(data.error);
-            }
-        }
-    })
-    .catch((error) => {
-        console.error('Error:', error.message);
-        alert('An error occurred: ' + error.message);
-    });
+   fetch('/api/login-send-verification', {
+       method: 'POST',
+       headers: {
+           'Content-Type': 'application/x-www-form-urlencoded',
+       },
+       body: new URLSearchParams({
+           email: email  // Pass the email as form data
+       }),
+   })
+   .then(response => response.json())
+   .then(data => {
+       if (data.success) {
+           // Show OTP section and update UI if the email is registered
+           document.getElementById('otp-section').classList.add('visible');
+           document.getElementById('continue-button').style.display = 'none';
+           document.getElementById('email-input').disabled = true;
+           document.getElementById('change-email').style.display = 'inline-block';
+       } else if (data.error) {
+           if (data.redirect) {
+               // Redirect to registration if the user is not registered
+               alert(data.error);
+               window.location.href = data.redirect;
+           } else {
+               alert(data.error);
+           }
+       }
+   })
+   .catch((error) => {
+       console.error('Error:', error.message);
+       alert('An error occurred: ' + error.message);
+   });
 });
 
 
@@ -360,45 +360,47 @@
 
 		// JavaScript to handle OTP verification and login
 		document.getElementById('login-button').addEventListener('click', function(event) {
-		    event.preventDefault(); // Prevent form from submitting
+    event.preventDefault();  // Prevent the form from being submitted traditionally
 
-		    const otp = document.getElementById('otp-input').value;
-		    const email = document.getElementById('email-input').value;
+    const otp = document.getElementById('otp-input').value;
+    const email = document.getElementById('email-input').value;
 
-		    // Send login request with email and OTP
-		    fetch('/api/login-user', {
-		        method: 'POST',
-		        headers: {
-		            'Content-Type': 'application/json',
-		        },
-		        body: JSON.stringify({
-		            email: email,
-		            otp: otp  // Pass the email and OTP as JSON
-		        }),
-		    })
-		    .then(response => response.text())
-		    .then(data => {
-		        if (data.includes("redirect")) {
-		            alert('Login successful!');
-		            window.location.href = '/profile';  // Redirect to the profile page
-		        } else {
-		            alert(data);  // Show error message
-		        }
-		    })
-		    .catch((error) => {
-		        console.error('Error:', error.message);
-		        alert('An error occurred while verifying OTP.');
-		    });
-		});
+    // Send login request with email and OTP via fetch
+    fetch('/api/login-user', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+            email: email,
+            otp: otp  // Pass the email and OTP as JSON
+        }),
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.status === "success") {
+            // If login is successful, redirect to the profile page
+            window.location.href = data.redirect;
+        } else {
+            // Show error message
+            alert(data.message);
+        }
+    })
+    .catch((error) => {
+        console.error('Error:', error);
+        alert('An error occurred while verifying OTP.');
+    });
+});
 
 
-        // JavaScript to change email
-        document.getElementById('change-email').addEventListener('click', function() {
-            document.getElementById('email-input').disabled = false;
-            document.getElementById('continue-button').style.display = 'inline-block';
-            document.getElementById('change-email').style.display = 'none';
-            document.getElementById('otp-section').style.display = 'none';
-        });
+
+       // JavaScript to change email
+       document.getElementById('change-email').addEventListener('click', function() {
+           document.getElementById('email-input').disabled = false;
+           document.getElementById('continue-button').style.display = 'inline-block';
+           document.getElementById('change-email').style.display = 'none';
+           document.getElementById('otp-section').style.display = 'none';
+       });
     </script>
 </body>
 </html>

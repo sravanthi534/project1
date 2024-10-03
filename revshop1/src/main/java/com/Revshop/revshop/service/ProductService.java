@@ -39,11 +39,12 @@ public class ProductService {
 	    
 	   repo.save(product);  
 	}
-//	public List<Product> getAllProducts() {
-//		
-//	        return repo.findAll();  
-//	    
-//	}
+	
+	public List<Product> getAllProducts() {
+		
+	        return repo.findAll();  
+	    
+	}
 	
 
 //	public List<Product> searchProducts(String query,Long sellerId) {
@@ -104,5 +105,15 @@ public class ProductService {
 	public List<Product> getProductsBySellerId(Long sellerId) {
         return repo.findBySeller_SellerId(sellerId);  // Fetch the products by sellerId
     }
+	public List<Product> searchProductsByNameOrCategory(String query) {
+		if (query == null || query.trim().isEmpty()) {
+            return List.of(); // Return an empty list if no query
+        }
+        return repo.findByNameOrCategory(query);
+    }
+	
+
+    
+
 	 
 }

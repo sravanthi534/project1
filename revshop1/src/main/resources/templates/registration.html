@@ -288,9 +288,10 @@
             <img th:src="@{/images/regis.jpg}" alt="Welcome Image" class="welcome-image">
         </div>
         <div class="right-side">
-			<div th:if="${message}" class="alert alert-warning" style="color: red; text-align: center; margin-bottom: 20px;">
-				<p th:text="${message}"></p>
-				</div>
+        
+        <div th:if="${message}" class="alert alert-warning" style="color: red; text-align: center; margin-bottom: 20px;">
+                <p th:text="${message}"></p>
+            </div>
             <form class="registration-form" th:action="@{/api/register-user}" method="post">
                 <h2>Create Account</h2>
                 
@@ -325,37 +326,40 @@
 	<script th:inline="javascript">
 	    // JavaScript to handle OTP section visibility and email submission
 		document.getElementById('continue-button').addEventListener('click', function() {
-		    const email = document.getElementById('email-input').value;
+    const email = document.getElementById('email-input').value;
 
-		    fetch('/api/register-send-verification', {
-		        method: 'POST',
-		        headers: {
-		            'Content-Type': 'application/x-www-form-urlencoded',
-		        },
-		        body: new URLSearchParams({
-		            email: email  // Pass the email as form data
-		        }),
-		    })
-		    .then(response => {
-		        if (!response.ok) {
-		            return response.json().then(error => { throw new Error(error.error); });
-		        }
-		        return response.json();
-		    })
-		    .then(data => {
-		        if (data.success) {
-		            // Show OTP section and update UI if the email is sent successfully
-		            document.getElementById('otp-section').classList.add('visible');
-		            document.getElementById('continue-button').style.display = 'none';
-		            document.getElementById('email-input').disabled = true;
-		            document.getElementById('change-email').style.display = 'inline-block';
-		        }
-		    })
-		    .catch((error) => {
-		        console.error('Error:', error.message);
-		        alert('An error occurred: ' + error.message);
-		    });
-		});
+    fetch('/api/register-send-verification', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/x-www-form-urlencoded',
+        },
+        body: new URLSearchParams({
+            email: email  // Pass the email as form data
+        }),
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            // Show OTP section and update UI if the email is sent successfully
+            document.getElementById('otp-section').classList.add('visible');
+            document.getElementById('continue-button').style.display = 'none';
+            document.getElementById('email-input').disabled = true;
+            document.getElementById('change-email').style.display = 'inline-block';
+        } else if (data.error) {
+            if (data.redirect) {
+                // Redirect to login if the user already exists
+                alert(data.error);
+                window.location.href = data.redirect;
+            } else {
+                alert(data.error);
+            }
+        }
+    })
+    .catch((error) => {
+        console.error('Error:', error.message);
+        alert('An error occurred: ' + error.message);
+    });
+});
 
 	    // JavaScript to handle Resend OTP
 		document.getElementById('resend-otp').addEventListener('click', function() {
@@ -394,7 +398,8 @@
 		    event.preventDefault(); // Prevent form from submitting
 
 		    const otp = document.getElementById('otp-input').value;
-
+		    const email = document.getElementById('email-input').value; 
+		    
 		    fetch('/api/verify-otp', {
 		        method: 'POST',
 		        headers: {
@@ -416,20 +421,29 @@
 		                    'Content-Type': 'application/json',
 		                },
 		                body: JSON.stringify({
-		                    // Optionally add more user details if needed
+		                    // Pass necessary user details
+		                	email: email,
 		                })
 		            })
-		            .then(registerResponse => registerResponse.text())
+		            .then(registerResponse => registerResponse.json())
 		            .then(registerData => {
-		                alert(registerData);  // Show success or failure message
-		                // Redirect to another page if needed, e.g., window.location = '/index';
+		                if (registerData.status === 'success') {
+		                    alert('Registration successful!');
+		                    window.location.href = registerData.redirect;  // Redirect to the specified URL
+		                } else {
+		                    alert(registerData.message);  // Show error message
+		                }
+		            })
+		            .catch((error) => {
+		                console.error('Error during registration:', error.message);
+		                alert('An error occurred during registration.');
 		            });
 		        } else {
 		            alert('Invalid OTP. Please try again.');
 		        }
 		    })
 		    .catch((error) => {
-		        console.error('Error:', error.message);
+		        console.error('Error during OTP verification:', error.message);
 		        alert('An error occurred while verifying OTP.');
 		    });
 		});

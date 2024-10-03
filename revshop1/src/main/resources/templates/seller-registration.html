@@ -196,7 +196,7 @@
             <div class="col-md-6 left-side d-flex flex-column align-items-center justify-content-center p-5">
                 <h1>Join Us as a Seller!</h1>
                 <p>Register to manage your products, track orders, and grow your business with RevShop!</p>
-                <img src="#" alt="Seller Image" class="welcome-image img-fluid rounded-circle">
+                <img src="https://m.media-amazon.com/images/G/31/amazonservices/Becoming_an_online_seller.jpg" alt="Seller Image" class="welcome-image img-fluid rounded-circle">
             </div>
             <div class="col-md-6 right-side d-flex flex-column justify-content-center">
                 <form class="registration-form" th:action="@{/sellerRegistration}" method="post" th:object="${seller}">
@@ -234,9 +234,7 @@
                     <div class="input-group">
                         <input type="text" th:field="*{zipcode}" placeholder="Zip Code" class="form-control" required>
                     </div>
-                     <div class="input-group">
-                     <input type="url" th:field="*{image}" placeholder="enter your image url" class="form-control"/>
-                     </div>
+            
                     <div class="button-container mb-4">
                         <button type="submit" id="signup-button" class="btn btn-primary w-100">Sign Up</button>
                     </div>

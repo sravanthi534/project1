@@ -156,6 +156,10 @@
 
 <!-- Edit Product Form Section -->
 <section>
+<!-- Success or error message -->
+    <div th:if="${message}">
+        <p th:text="${message}" style="color:green;"></p>
+    </div>
     <form action="#" th:action="@{/edit-product}" th:object="${product}" method="post">
         <input type="hidden" th:field="*{productId}" />  <!-- Hidden field for productId -->
         <input type="hidden" th:value="${session.loggedInSeller.sellerId}" name="sellerId"/> <!-- Seller ID -->
@@ -187,10 +191,7 @@
         <button type="submit">Update Product</button>
     </form>
 
-    <!-- Success or error message -->
-    <div th:if="${message}">
-        <p th:text="${message}" style="color:green;"></p>
-    </div>
+    
 </section>
 
 </body>
