@@ -2,7 +2,7 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="ISO-8859-1">
-    <title>Add Product</title>
+    <title>Edit Product</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <style>
         body {
@@ -141,31 +141,23 @@
     <a th:href="@{/seller-dashboard}">
         <i class="fas fa-tachometer-alt"></i> Dashboard
     </a>
+    <a th:href="@{/add-product}">
+        <i class="fas fa-plus"></i> Add Product
+    </a>
     <a th:href="@{/view-orders}">
         <i class="fas fa-box-open"></i> View Orders
-    </a>
-    <a th:href="@{/logout}">
-        <i class="fas fa-sign-out-alt"></i> Logout
     </a>
 </nav>
 
 <!-- Page Header -->
 <header>
-    <h1>Add Product</h1>
+    <h1>Edit Product</h1>
 </header>
 
-<!-- Product Form Section -->
+<!-- Edit Product Form Section -->
 <section>
-    <!-- Display success or error messages -->
-    <div th:if="${message}">
-        <p th:text="${message}" style="color: green;"></p>
-    </div>
-    <div th:if="${loginError}">
-        <p th:text="${loginError}" style="color:red;"></p>
-    </div>
-
-    <!-- Product Form -->
-    <form action="#" th:action="@{/add-product}" method="post" th:object="${product}">
+    <form action="#" th:action="@{/edit-product}" th:object="${product}" method="post">
+        <input type="hidden" th:field="*{productId}" />  <!-- Hidden field for productId -->
         <input type="hidden" th:value="${session.loggedInSeller.sellerId}" name="sellerId"/> <!-- Seller ID -->
 
         <label for="name">Product Name:</label>
@@ -192,8 +184,13 @@
         <label for="categoryname">Category Name:</label>
         <input type="text" id="categoryname" th:field="*{categoryname}" required />
 
-        <button type="submit">Add Product</button>
+        <button type="submit">Update Product</button>
     </form>
+
+    <!-- Success or error message -->
+    <div th:if="${message}">
+        <p th:text="${message}" style="color:green;"></p>
+    </div>
 </section>
 
 </body>

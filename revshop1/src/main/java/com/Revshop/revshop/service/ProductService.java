@@ -59,14 +59,14 @@ public class ProductService {
 //        return repo.findBySeller_SelleridAndNameContainingIgnoreCaseOrDescriptionContainingIgnoreCaseOrCategorynameContainingIgnoreCase(
 //                sellerId, query, query, query);
 //    }
-//	public List<Product> searchProducts(String query, Long sellerId) {
-//        // Check if the query is null or empty to avoid fetching all products
-//        if (query == null || query.trim().isEmpty()) {
-//            return List.of(); // Return an empty list if no query
-//        }
-//
-//        return repo.searchBySellerAndQuery(sellerId, query);
-//    }
+	public List<Product> searchProducts(String query, Long sellerId) {
+        // Check if the query is null or empty to avoid fetching all products
+        if (query == null || query.trim().isEmpty()) {
+            return List.of(); // Return an empty list if no query
+        }
+
+        return repo.searchBySellerAndQuery(sellerId, query);
+    }
 
     
 	
@@ -95,7 +95,6 @@ public class ProductService {
 		
 	}
 
-
 	
 
 
@@ -105,5 +104,5 @@ public class ProductService {
 	public List<Product> getProductsBySellerId(Long sellerId) {
         return repo.findBySeller_SellerId(sellerId);  // Fetch the products by sellerId
     }
-
+	 
 }

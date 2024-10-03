@@ -5,6 +5,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -31,7 +32,10 @@ public class ProductController {
     @PostMapping("/add-product")
     public String addProduct(@ModelAttribute("product") Product product, HttpSession session, Model model) {
         Seller loggedInSeller = (Seller) session.getAttribute("loggedInSeller");
+       
         if (loggedInSeller != null) {
+        	String sellerName=loggedInSeller.getLastName();
+        	
             product.setSeller(loggedInSeller); 
             System.out.println(loggedInSeller.getSellerId());
             productService.addProduct(product);  
@@ -49,5 +53,45 @@ public class ProductController {
         
         return "display-products";  
     }
+    @GetMapping("/edit-product")
+    public String showEditProductForm(@RequestParam("id") Long productId, Model model) {
+        Product product = productService.getProductById(productId); // Fetch product by ID
+        model.addAttribute("product", product);
+        return "edit-product";
+    }
 
+    @PostMapping("/edit-product")
+    public String editProduct(@ModelAttribute("product") Product product, HttpSession session, Model model) {
+        Seller loggedInSeller = (Seller) session.getAttribute("loggedInSeller");
+        if (loggedInSeller != null) {
+            product.setSeller(loggedInSeller);  
+            productService.updateProduct(product); 
+
+            model.addAttribute("message", "Product updated successfully!");  
+            return "sellerDahboard";
+        }
+        model.addAttribute("loginError", "You must log in to edit a product.");
+        return "loginSeller"; 
+    }
+
+    @DeleteMapping("/delete-product")
+    public String deleteProduct(@RequestParam("id") Long productId,Model model)
+    {
+    	productService.deleteProduct(productId);
+    	return "display-products";
+    }
+    @GetMapping("/search-products")
+    public String searchProducts(@RequestParam("query") String query,
+                                 @RequestParam("sellerId") Long sellerId,
+                                 Model model) {
+        List<Product> products = productService.searchProducts(query, sellerId);
+        
+        // Add products and message to the model
+        model.addAttribute("products", products);
+        model.addAttribute("message", products.isEmpty() ? "No products found." : null);
+        
+        return "display-products"; 
+    }
+    
+    
 }
