@@ -41,7 +41,7 @@ public class ProductController {
             productService.addProduct(product);  
             
             model.addAttribute("message", "Product added successfully!"); 
-            return "seller-dashboard";  
+            return "redirect:/display-products?sellerId=" + loggedInSeller.getSellerId();  
         }
         model.addAttribute("loginError", "You must log in to add a product.");
         return "redirect:/seller-login";  
@@ -69,7 +69,7 @@ public class ProductController {
             productService.updateProduct(product); 
 
             model.addAttribute("message", "Product updated successfully!");  
-            return "edit-product";
+            return "redirect:/display-products?sellerId=" + loggedInSeller.getSellerId(); 
         }
         model.addAttribute("loginError", "You must log in to edit a product.");
         return "loginSeller"; 
