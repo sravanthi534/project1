@@ -267,6 +267,19 @@ td img {
         padding: 10px 16px;
     }
 }
+.logout-home button {
+            background-color: transparent;
+            border: 1px solid white;
+            padding: 10px 15px;
+            border-radius: 5px;
+            color: white;
+            cursor: pointer;
+        }
+
+        .logout-home button:hover {
+            background-color: white;
+            color: #4863A0;
+        }
         
     </style>
 </head>
@@ -283,16 +296,16 @@ td img {
     </div>
     <ul class="nav-links">
         <li class="dropdown" id="user-dropdown">
-            <a href="#" class="dropbtn"><i class="fas fa-user"></i> Login</a>
-            <div class="dropdown-content">
-                <a th:href="@{/registration}">New Customer? Sign Up</a>
-                <a th:href="@{/profile}">My Profile</a>
-                <a th:href="@{/viewOrders}">My Orders</a>
-            </div>
-        </li>
+    
+</li>
+        
         <li><a th:href="@{/cart}"><i class="fas fa-shopping-cart"></i> Cart</a></li>
         <li><a th:href="@{/wishlist}"><i class="fas fa-heart"></i> Wishlist</a></li>
         <li><a th:href="@{/sellerRegistration}"><i class="fas fa-store"></i> Become a Seller</a></li>
+        <li class="logout-home">
+            <button onclick="window.location.href='/home'">Home</button>
+            <button onclick="window.location.href='/login'">Logout</button>
+        </li>
     </ul>
     <div class="hamburger" onclick="toggleMenu()">
         <i class="fas fa-bars"></i>
@@ -375,18 +388,24 @@ td img {
     </div>
 
     <!-- Price Details Section -->
-    <div class="price-details">
-        <h2>Price Details</h2>
-        <p>Total Price: <span th:text="${totalPrice}"></span></p>
-        <p>Discount: <span th:text="${discount}"></span></p>
-        <p>Delivery Charges: <span th:text="${deliveryCharges}"></span></p>
-        <p><strong>Total Amount: <span th:text="${totalPrice}"></span></strong></p>
-        <form action="/checkout" method="post">
-            <input type="hidden" name="totalPrice" th:value="${totalPrice}" />
-            <input type="hidden" name="userId" th:value="${userId}" />
-            <button class="place-order-btn" type="submit">Place Order</button>
-        </form>
-    </div>
+   <!-- Price Details Section -->
+<div class="price-details">
+    <h2>Price Details</h2>
+    <p>Total Price: <span th:text="${totalPrice}"></span></p>
+    <p>Discount: <span th:text="${discount}"></span></p>
+    <p>Delivery Charges: <span th:text="${deliveryCharges}"></span></p>
+    
+    <!-- Calculate Final Total: Total Price - Discount + Delivery Charges -->
+    <p><strong>Total Amount: 
+        <span th:text="${totalPrice} - ${discount} + ${deliveryCharges}"></span></strong></p>
+    
+    <form action="/checkout" method="post">
+        <input type="hidden" name="totalPrice" th:value="${totalPrice} - ${discount} + ${deliveryCharges}" />
+        <input type="hidden" name="userId" th:value="${userId}" />
+        <button class="place-order-btn" type="submit">Place Order</button>
+    </form>
+</div>
+   
 
 </body>
 </html>

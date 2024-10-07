@@ -184,6 +184,18 @@
             </div>
         </div>
     </div>
+    <div class="container reviews-section mt-5">
+        <h3>Customer Reviews</h3>
+        <ul class="list-group">
+            <li class="list-group-item" th:each="review : ${reviews}">
+                <div class="review-content">
+                    
+                    <p th:text="${review.reviewText}"></p>
+                   
+                </div>
+            </li>
+        </ul>
+    </div>
 
 </body>
 

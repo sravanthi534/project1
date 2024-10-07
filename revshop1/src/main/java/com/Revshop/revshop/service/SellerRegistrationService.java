@@ -7,16 +7,21 @@ import org.springframework.stereotype.Service;
 
 import com.Revshop.revshop.model.Seller;
 import com.Revshop.revshop.repository.SellerRepository;
+import com.Revshop.revshop.util.PasswordUtil;
 
 @Service
 public class SellerRegistrationService {
 
 	@Autowired
-	private SellerRepository sellerRepo;       
+	private SellerRepository sellerRepo; 
+	
+	@Autowired
+	private PasswordUtil pwd_hash;
 
 	public Seller registerSeller(Seller seller)
 	{
 		seller.setRegistrationDate(LocalDate.now());
+		seller.setPassword(pwd_hash.hashPassword(seller.getPassword()));
 		return sellerRepo.save(seller);
 	}
 	
